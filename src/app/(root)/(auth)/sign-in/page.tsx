@@ -1,23 +1,23 @@
-"use client";
-import { Icons } from "@/components/Icons";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
-import { AuthLoginValidator, TAuthLoginValidator } from "@/lib/validators";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, X } from "lucide-react";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { signIn } from "next-auth/react";
+'use client';
+import { Icons } from '@/components/Icons';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { cn } from '@/lib/utils';
+import { AuthLoginValidator, TAuthLoginValidator } from '@/lib/validators';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ArrowRight, X } from 'lucide-react';
+import { signIn } from 'next-auth/react';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 export default function Page() {
   const router = useRouter();
   const [searchParams = []] = useSearchParams();
   const callbackUrl = searchParams[1];
-  const close = () => router.push("/");
+  const close = () => router.push('/');
   const {
     register,
     handleSubmit,
@@ -27,18 +27,18 @@ export default function Page() {
   });
 
   const LoginForm = async (values: TAuthLoginValidator) => {
-    const loginData = await signIn("credentials", {
+    const loginData = await signIn('credentials', {
       email: values.email,
       password: values.password,
-      callbackUrl: callbackUrl?.includes("checkout")
-        ? "http://localhost:3000/checkout"
-        : "http://localhost:3000",
+      callbackUrl: callbackUrl?.includes('checkout')
+        ? 'http://localhost:3000/checkout'
+        : 'http://localhost:3000',
     });
     if (loginData?.status === 200) {
       toast.success(`Logged in successfully`);
     }
     if (loginData?.status === 401) {
-      toast.error("Invalid email adress or password!.");
+      toast.error('Invalid email adress or password!.');
     }
   };
   return (
@@ -55,10 +55,7 @@ export default function Page() {
         <div className="container relative  flex justify-center ">
           <div className="mx-auto w-full space-y-4 flex  flex-col ">
             <div className="flex flex-col items-center  text-center gap-1 ">
-              <Icons.Logo2
-                className="h-14 w-28 mr-2 dark:fill-white"
-                viewBox="0 20 100 60"
-              />
+              <Icons.Logo2 className="h-14 w-28 mr-2 dark:fill-white" viewBox="0 20 100 60" />
               <h1 className="text-xl font-bold ">Sign in to your account</h1>
               <p className="flex items-center gap-2">
                 Don&apos;t have an account?
@@ -66,7 +63,7 @@ export default function Page() {
                   href="/sign-up"
                   className="flex items-center font-semibold tracking-wide gap-1 text-sky-600 hover:underline"
                 >
-                  {" "}
+                  {' '}
                   Create One
                   <ArrowRight className=" h-5 w-5" />
                 </Link>
@@ -78,33 +75,31 @@ export default function Page() {
                   <div className="space-y-1">
                     <Label htmlFor="email"> Email</Label>
                     <Input
-                      {...register("email")}
+                      {...register('email')}
                       type="email"
                       placeholder="You@example.com"
+                      defaultValue="test@test.com"
                       className={cn({
-                        "focus-visible:ring-red-500 mt-1": errors.email,
+                        'focus-visible:ring-red-500 mt-1': errors.email,
                       })}
                     />
                     {errors.email && (
-                      <span className="text-sm text-red-600">
-                        {errors.email?.message}
-                      </span>
+                      <span className="text-sm text-red-600">{errors.email?.message}</span>
                     )}
                   </div>
                   <div className="space-y-1 mb-4">
                     <Label htmlFor="password"> Password</Label>
                     <Input
-                      {...register("password")}
+                      {...register('password')}
                       type="password"
                       placeholder="Password"
+                      defaultValue="1234512345"
                       className={cn({
-                        "focus-visible:ring-red-500 mt-1": errors.password,
+                        'focus-visible:ring-red-500 mt-1': errors.password,
                       })}
                     />
                     {errors.password && (
-                      <span className="text-sm text-red-600">
-                        {errors.password?.message}
-                      </span>
+                      <span className="text-sm text-red-600">{errors.password?.message}</span>
                     )}
                   </div>
                   <Button>Sign Up</Button>

@@ -1,32 +1,25 @@
-"use server";
-import { eq } from "drizzle-orm";
-import { db } from "@/db/drizzle";
-import { User } from "@/db/schema";
-import { TAuthCreateUserValidator } from "@/lib/validators";
-import { randomUUID } from "crypto";
-import bcrypt from "bcrypt";
-import { Resend } from "resend";
-import { PrimaryActionEmailHtml } from "@/components/Email";
-import "dotenv/config";
+'use server';
+import { db } from '@/db/drizzle';
+import { User } from '@/db/schema';
+import { TAuthCreateUserValidator } from '@/lib/validators';
+import bcrypt from 'bcrypt';
+import { randomUUID } from 'crypto';
+import 'dotenv/config';
+import { eq } from 'drizzle-orm';
+import { Resend } from 'resend';
+import { sendVerificationEmail } from './sendEmail';
 
 export const createUser = async (user: TAuthCreateUserValidator) => {
   const dbUser = await db.select().from(User).where(eq(User.email, user.email));
   if (dbUser.length > 0) {
-    return {success: false, message:"Email already exist."}
+    return { success: false, message: 'Email already exist.' };
   }
   const token = randomUUID();
   const hashedPwd = await bcrypt.hash(user.password, 10);
   const resend = new Resend(process.env.RESEND_API_KEY);
-  await resend.emails.send({
-    from: "Acme <onboarding@resend.dev>",
-    to: [user.email],
-    subject: "Verify Your Email.",
-    html: PrimaryActionEmailHtml({
-      actionLabel: "verify your account",
-      buttonText: "Verify Account",
-      href: `${process.env.PUBLIC_SERVER_URL}/verify-email?token=${token}`,
-    }),
-  });
+
+  await sendVerificationEmail(user, token);
+
   await db
     .insert(User)
     .values({
@@ -34,7 +27,7 @@ export const createUser = async (user: TAuthCreateUserValidator) => {
       password: hashedPwd,
       email: user.email,
       emailToken: token,
-      expiration: new Date(Date.now() + 1000 * 60* 5),
+      expiration: new Date(Date.now() + 1000 * 60 * 5),
     })
     .returning();
   return { success: true, sentToEmail: user.email };

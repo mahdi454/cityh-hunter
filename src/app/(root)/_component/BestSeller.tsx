@@ -1,5 +1,4 @@
-"use client";
-import * as React from "react";
+'use client';
 
 import {
   Carousel,
@@ -7,16 +6,14 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel";
-import { motion } from "framer-motion";
-import { useState } from "react";
-import { MoveRight } from "lucide-react";
-import Link from "next/link";
-import Image from "next/image";
-import { Heart } from "lucide-react";
-import { formatPrice } from "@/lib/utils";
-import { Products } from "@/db/schema";
-import { useAddWishList } from "@/context/wishListStore";
+} from '@/components/ui/carousel';
+import { useAddWishList } from '@/context/wishListStore';
+import { Products } from '@/db/schema';
+import { formatPrice } from '@/lib/utils';
+import { Heart, MoveRight } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useState } from 'react';
 
 type Product = typeof Products.$inferSelect;
 type ProductType = {
@@ -35,9 +32,7 @@ export function BestSeller({ bestSellerMen, bestSellerWomen }: ProductType) {
   return (
     <div className="flex flex-col justify-center items-center mt-4   ">
       <div className=" flex items-center mb-4">
-        <h2 className="text-xl  font-light tracking-tight mr-4   ">
-          Best Seller Product
-        </h2>
+        <h2 className="text-xl  font-light tracking-tight mr-4   ">Best Seller Product</h2>
         <div className="flex gap-4 rounded-full  border-[1px]  border-slate-700 dark:border-slate-100 p-[2px]">
           {navigation.map((item) => {
             const isSelected = item.name === selectedLink;
@@ -66,65 +61,51 @@ export function BestSeller({ bestSellerMen, bestSellerWomen }: ProductType) {
         <CarouselContent className="-ml-1">
           {products.map((product, index) => {
             return (
-              <CarouselItem
-                key={product.id}
-                className="pl-1 md:basis-1/2 lg:basis-1/3"
-              >
+              <CarouselItem key={product.id} className="pl-1 md:basis-1/2 lg:basis-1/3">
                 <div className=" flex justify-center">
                   <div
-                    className={`relative group w-[380px] sm:w-[400px] h-[520px] bg-slate-50 dark:bg-slate-900 scale-[0.989]`}
+                    className={`relative group w-[380px] sm:w-[400px] h-[475px] bg-slate-50  scale-[0.989]`}
                   >
                     <Image
-                      fill
-                      src={
-                        product.imageURL.filter((img) =>
-                          img.includes("back")
-                        )[0]
-                      }
+                      width={800}
+                      height={1000}
+                      src={product.imageURL.filter((img) => img.includes('_1'))[0]}
                       alt={product.productName}
-                      className=" sm:scale-95 group-hover:scale-100 delay-100 transition-transform"
+                      className=" sm:scale-95 group-hover:scale-100 delay-100 transition-transform object-cover"
                     />
                     <Link href={`/products/allproduct/${product.id}`}>
                       <div
                         onMouseEnter={() => setIsHovered(true)}
                         onMouseLeave={() => setIsHovered(false)}
-                        className="sm:hidden absolute bottom-0 w-full group-hover:flex flex-col text-black  p-2 transition-all delay-500"
+                        className=" absolute bottom-0 w-full flex flex-col text-black  p-2 transition-all delay-500 bg-white"
                       >
-                        <p className="text-lg tracking-tight font-light ">
-                          {product.productName}
-                        </p>
+                        <p className="text-lg tracking-tight font-light ">{product.productName}</p>
                         <div className="flex justify-between items-center">
                           <p className="flex items-center gap-4  text-lg tracking-wide mt-1 font-semibold ">
-                            Shop now{" "}
-                            <motion.span
-                              animate={isHovered ? { scaleX: 1.5, x: 10 } : {}}
-                              transition={{ delay: 0.3 }}
-                              className="mt-1  "
-                            >
-                              <MoveRight />
-                            </motion.span>
+                            Shop now{' '}
+                            <MoveRight
+                              size={20}
+                              className="transition-transform duration-500 ease-in-out group-hover:translate-x-2"
+                            />
                           </p>
                           <p>
                             {formatPrice(product.price, {
-                              currency: "USD",
-                              notation: "standard",
+                              currency: 'USD',
+                              notation: 'standard',
                               maxFraction: 0,
                             })}
                           </p>
                         </div>
                       </div>
                     </Link>
-                    <div className="hidden absolute bottom-0 h-[2px] w-full bg-emerald-400 dark:bg-slate-50  group-hover:animate-move-right group-hover:cursor-pointer group-hover:flex " />
+                    <div className="hidden absolute bottom-0 h-[2px] w-full bg-emerald-400   group-hover:animate-move-right group-hover:cursor-pointer group-hover:flex " />
+                    <div className="hidden absolute bottom-20 h-[2px] w-full bg-emerald-400   group-hover:animate-move-right group-hover:cursor-pointer group-hover:flex " />
                     {cart.some((item) => item.id === product.id) ? (
                       <button
                         className="absolute top-4 left-4 hidden group-hover:flex dark:text-black hover:cursor-pointer"
                         onClick={() => remove(product.id)}
                       >
-                        <Heart
-                          width="20"
-                          fill="#e41919"
-                          className="text-red-500"
-                        />
+                        <Heart width="20" fill="#e41919" className="text-red-500" />
                       </button>
                     ) : (
                       <button
